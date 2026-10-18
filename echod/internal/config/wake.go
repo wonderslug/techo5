@@ -89,6 +89,10 @@ type Hangup struct {
 // default, and a choice of none has to outlast the default.
 const HangupNone = "none"
 
+// HangupStop is the stop word doing the hang-up word's work: the stop word that is listened for anyway,
+// so nothing more is loaded for a call, and a ring during the call is still stopped first.
+const HangupStop = "stop_word"
+
 // ThresholdAt is the score the hang-up word has to reach.
 func (h Hangup) ThresholdAt() float64 {
 	if h.Threshold <= 0 {

@@ -10,6 +10,7 @@ import (
 	"github.com/HuskerMinion/techo5/echod/internal/config"
 	"github.com/HuskerMinion/techo5/echod/internal/feature/detect/assets"
 	"github.com/HuskerMinion/techo5/echod/internal/feature/phone"
+	"github.com/HuskerMinion/techo5/echod/internal/feature/talkback"
 	"github.com/HuskerMinion/techo5/echod/internal/layout"
 	"github.com/HuskerMinion/techo5/echod/internal/lib/wake"
 )
@@ -19,6 +20,18 @@ const HangupSlot = StopSlot + 1
 
 // hangupNone is the hang-up word's select switched off.
 const hangupNone = "None"
+
+// hangUp is the hang-up word, or the stop word standing in for it, heard: it hangs up if hangupHeard
+// says so. what names which, for the log.
+func hangUp(what string) {
+	onCall, farEnd := phone.Get().Busy(), phone.Get().FarEndTalking()
+	if !hangupHeard(onCall, talkback.Get().Busy(), farEnd) {
+		slog.Info(what+" ignored", "on_call", onCall, "far_end_talking", farEnd)
+		return
+	}
+	slog.Info(what + ", hanging up")
+	phone.Get().Hangup()
+}
 
 // hangupModel describes the device's own hang-up word to the engine, from the manifest it was trained
 // with, as stopModel does the stop word.
@@ -114,12 +127,13 @@ func newHangup(d *Detect) *hangup {
 	return h
 }
 
-// options are None, the device's own word, and the models the device has, by phrase. One of the user's
-// with the same phrase as the device's own is left out, as it could not be told apart in the list.
+// options are None, the device's own word, the stop word, and the models the device has, by phrase. One
+// of the user's with the same phrase as either of the device's own is left out, as it could not be told
+// apart in the list.
 func (h *hangup) options() []string {
-	out := []string{hangupNone, assets.HangupPhrase}
+	out := []string{hangupNone, assets.HangupPhrase, assets.StopPhrase}
 	for _, m := range h.models() {
-		if m.Phrase != assets.HangupPhrase {
+		if m.Phrase != assets.HangupPhrase && m.Phrase != assets.StopPhrase {
 			out = append(out, m.Phrase)
 		}
 	}
@@ -127,13 +141,16 @@ func (h *hangup) options() []string {
 }
 
 // idFor is what a select option is saved as, and whether it names anything: config.HangupNone for None,
-// empty for the device's own word, a model's id for one of the library's.
+// empty for the device's own word, config.HangupStop for the stop word, a model's id for one of the
+// library's.
 func (h *hangup) idFor(phrase string) (string, bool) {
 	switch phrase {
 	case hangupNone:
 		return config.HangupNone, true
 	case assets.HangupPhrase:
 		return "", true
+	case assets.StopPhrase:
+		return config.HangupStop, true
 	}
 	for _, m := range h.models() {
 		if m.Phrase == phrase {
@@ -151,6 +168,8 @@ func (h *hangup) phraseFor(id string) string {
 		return assets.HangupPhrase
 	case config.HangupNone:
 		return hangupNone
+	case config.HangupStop:
+		return assets.StopPhrase
 	}
 	if m, ok := wake.Find(h.models(), id); ok {
 		return m.Phrase
@@ -165,12 +184,13 @@ func (h *hangup) restore(c config.Hangup) {
 	slog.Info("restored", "what", h.word.ObjectID, "using", h.phraseFor(c.ID))
 }
 
-// wanted is the model the slot should hold: none off a call or with None chosen, the device's own word
-// for the default, or the library's model.
+// wanted is the model the slot should hold: none off a call, with None chosen, or with the stop word
+// chosen (it has a slot of its own, loaded already); the device's own word for the default, or the
+// library's model.
 func (h *hangup) wanted(onCall bool) (wake.Model, bool) {
 	id := config.Get().Wake.Hangup.ID
 	switch {
-	case !onCall || id == config.HangupNone:
+	case !onCall || id == config.HangupNone || id == config.HangupStop:
 		return wake.Model{}, false
 	case id == "":
 		m, err := h.builtin()

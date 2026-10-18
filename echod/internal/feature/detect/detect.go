@@ -143,13 +143,7 @@ func newDetect() *Detect {
 	e.OnDetect = func(slot int) {
 		// The hang-up word means nothing but that, whatever else is going on (hangup.go).
 		if slot == HangupSlot {
-			onCall, farEnd := phone.Get().Busy(), phone.Get().FarEndTalking()
-			if !hangupHeard(onCall, talkback.Get().Busy(), farEnd) {
-				slog.Info("hang-up word ignored", "on_call", onCall, "far_end_talking", farEnd)
-				return
-			}
-			slog.Info("hang-up word, hanging up")
-			phone.Get().Hangup()
+			hangUp("hang-up word")
 			return
 		}
 
@@ -167,6 +161,12 @@ func newDetect() *Detect {
 			if slot == StopSlot && ring.IsSounding() {
 				slog.Info("stop word during a call, ending the ring")
 				ring.End()
+				return
+			}
+			// With nothing ringing, the stop word chosen as the hang-up word hangs up (hangup.go). A
+			// ring first, so a timer going off mid-call is stopped without ending the call.
+			if slot == StopSlot && phone.Get().Busy() && config.Get().Wake.Hangup.ID == config.HangupStop {
+				hangUp("stop word")
 				return
 			}
 			slog.Debug("wake word ignored during a call or a talk through a camera", "slot", slot+1)

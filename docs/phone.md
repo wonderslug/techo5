@@ -87,6 +87,10 @@ including one of your own added the way a wake word of your own is (setup.md).
   word.
 - **Hang-up word threshold** is the score it has to reach, a wake word's 0.85 until set. Higher hears
   it less often, by mistake or not.
+- **Stop** in the same list has the stop word do it instead, at the stop word's own threshold. An alarm
+  or timer ringing during the call is stopped first, and the next "stop" hangs up. "Stop" comes up in
+  conversation more than "hang up" does, so it hangs up by mistake more often. With the stop word
+  turned off (**Stop word threshold** at its top), it does nothing.
 
 ## Events
 

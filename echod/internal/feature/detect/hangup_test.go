@@ -70,6 +70,13 @@ func TestHangupFollowsTheCall(t *testing.T) {
 		t.Fatalf("None chosen, loaded %q", got)
 	}
 
+	// The stop word has its own slot, already loaded: nothing more goes in for it.
+	choose(config.HangupStop)
+	h.follow(true)
+	if got := loaded(); got != "" {
+		t.Fatalf("the stop word chosen, loaded %q", got)
+	}
+
 	choose("computer")
 	h.follow(true)
 	if got := loaded(); got != "computer" {
@@ -92,18 +99,22 @@ func TestHangupFollowsTheCall(t *testing.T) {
 	}
 }
 
-// The select offers None and the device's own word first, saves them as what config reads, and shows a
-// model the device no longer has as None. One of the user's called "Hang up" is not offered twice.
+// The select offers None and the device's own two words first, saves them as what config reads, and
+// shows a model the device no longer has as None. One of the user's called "Hang up" or "Stop" is not
+// offered twice.
 func TestHangupOptions(t *testing.T) {
 	h := &hangup{models: func() []wake.Model {
 		return []wake.Model{model("computer", wake.KindMicroWakeWord),
-			{ID: "my_hang_up", Phrase: assets.HangupPhrase, Kind: wake.KindMicroWakeWord}}
+			{ID: "my_hang_up", Phrase: assets.HangupPhrase, Kind: wake.KindMicroWakeWord},
+			{ID: "my_stop", Phrase: assets.StopPhrase, Kind: wake.KindMicroWakeWord}}
 	}}
-	if got, want := h.options(), []string{hangupNone, assets.HangupPhrase, "computer"}; !slices.Equal(got, want) {
+	want := []string{hangupNone, assets.HangupPhrase, assets.StopPhrase, "computer"}
+	if got := h.options(); !slices.Equal(got, want) {
 		t.Errorf("options %v, want %v", got, want)
 	}
 	for _, c := range []struct{ phrase, id string }{
-		{hangupNone, config.HangupNone}, {assets.HangupPhrase, ""}, {"computer", "computer"},
+		{hangupNone, config.HangupNone}, {assets.HangupPhrase, ""}, {assets.StopPhrase, config.HangupStop},
+		{"computer", "computer"},
 	} {
 		if id, ok := h.idFor(c.phrase); !ok || id != c.id {
 			t.Errorf("idFor(%q) = %q, %v; want %q", c.phrase, id, ok, c.id)
