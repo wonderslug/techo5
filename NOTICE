@@ -107,6 +107,10 @@ Wake word models (embedded in the daemon)
   microWakeWord, https://github.com/kahrendt/microWakeWord. Embedded because it is not a choice:
   nothing selects it and a device without it would have no way to be interrupted.
 
+  The hang-up word, echod/internal/feature/detect/assets/hang_up.tflite — trained for TECHO5 with
+  microWakeWord at https://microwakeword.com. Embedded so hanging up a call by voice works with no
+  model to install; it is the default of the Hang-up word setting, which can choose another.
+
   The openWakeWord front end, echod/internal/lib/oww/assets/melspectrogram.tflite and
   embedding_model.tflite — Apache License 2.0
   openWakeWord, https://github.com/dscripka/openWakeWord, whose code is Apache-2.0. The embedding

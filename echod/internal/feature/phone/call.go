@@ -33,7 +33,26 @@ const (
 	// network delivers in bursts and the speaker plays at its own pace; without a limit a call drifts
 	// seconds late and people talk over each other.
 	maxBehind = 300 * time.Millisecond
+
+	// farEndLoud is the mean square per sample, at int16 scale, over which a frame from the far end
+	// counts as somebody talking: about -45 dBFS, well under speech on a call and over a line's hiss.
+	farEndLoud = 3.2e-5 * 32768 * 32768
+
+	// farEndHold is how long after a loud frame arrives the far end still counts as talking. The frame
+	// plays up to maxBehind later, the room rings with it after that, and a word is reported a moment
+	// after it is said: a word the far end said ends inside this.
+	farEndHold = maxBehind + 500*time.Millisecond
 )
+
+// farEndAt is when the last loud frame came from the far end, as Unix nanoseconds; zero is never.
+var farEndAt atomic.Int64
+
+// farEndTalking reports whether the far end was loud in the last farEndHold: what comes out of the
+// speaker then could be the far end saying the word, not somebody in the room.
+func farEndTalking(now time.Time) bool {
+	at := farEndAt.Load()
+	return at != 0 && now.Sub(time.Unix(0, at)) < farEndHold
+}
 
 // talk carries a call's audio both ways until the call ends or ctx does: the microphones (after echo
 // cancellation) to the far end, and the far end to the speaker. say is spoken audio to send as well, at
@@ -163,7 +182,9 @@ func receive(ctx context.Context, dec io.Reader, wide bool, st *stats) error {
 				for i := range s {
 					s[i] = int16(binary.LittleEndian.Uint16(buf[2*i:]))
 				}
-				st.add(&st.received, &st.recvSq, s)
+				if st.add(&st.received, &st.recvSq, s) > farEndLoud {
+					farEndAt.Store(time.Now().UnixNano())
+				}
 				if !wide {
 					s = u.Run(s)
 				}
@@ -232,16 +253,18 @@ type stats struct {
 	sentSq, recvSq atomic.Uint64 // mean square per frame, summed
 }
 
-func (st *stats) add(n *atomic.Int64, sq *atomic.Uint64, s []int16) {
+func (st *stats) add(n *atomic.Int64, sq *atomic.Uint64, s []int16) float64 {
 	if len(s) == 0 {
-		return
+		return 0
 	}
 	var sum float64
 	for _, v := range s {
 		sum += float64(v) * float64(v)
 	}
+	ms := sum / float64(len(s))
 	n.Add(1)
-	sq.Add(uint64(sum / float64(len(s))))
+	sq.Add(uint64(ms))
+	return ms
 }
 
 func (st *stats) level(sq *atomic.Uint64, n *atomic.Int64) string {

@@ -232,6 +232,10 @@ func (p *Phone) Button() bool {
 	return false
 }
 
+// FarEndTalking reports whether the other party was talking a moment ago, through the speaker: a word
+// heard then may be theirs rather than somebody's in the room.
+func (p *Phone) FarEndTalking() bool { return farEndTalking(time.Now()) }
+
 // Say sends 16 kHz speech into the call in progress, and reports whether there was one.
 func (p *Phone) Say(samples []int16) bool {
 	if p.State().Phase != Talking {

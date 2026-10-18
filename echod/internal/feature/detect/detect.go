@@ -39,6 +39,9 @@ type Detect struct {
 	busy   *wakeBusy
 	stop   *esphome.Number
 
+	// hangup is the hang-up word's select and threshold, and its loading with the call: see hangup.go.
+	hangup *hangup
+
 	// score is the last wake's peak, for setting the threshold by: see newScoreEntity.
 	score *esphome.Sensor
 
@@ -122,15 +125,34 @@ func unmuteSettle() time.Duration {
 }
 
 func newDetect() *Detect {
-	// Sized to reach the stop word's reserved index. The slots between it and Home Assistant's are never
-	// loaded, and an unloaded slot is one comparison a frame.
-	e := New(StopSlot+1, mic.Get())
+	// Sized to reach the reserved indexes, the stop word's and the hang-up word's. The slots between them
+	// and Home Assistant's are never loaded, and an unloaded slot is one comparison a frame.
+	e := New(HangupSlot+1, mic.Get())
 
+	// The hang-up word is judged as a wake word is, its own threshold standing in for the slot's.
+	base := func(slot int) float64 {
+		if slot == HangupSlot {
+			return config.Get().Wake.Hangup.ThresholdAt()
+		}
+		return wakeword.Threshold(slot)
+	}
 	e.Threshold = func(slot int) float64 {
-		return thresholdFor(slot, wakeword.Threshold, config.Get().Wake.Stop.Threshold, mic.Get().Canceling())
+		return thresholdFor(slot, base, config.Get().Wake.Stop.Threshold, mic.Get().Canceling())
 	}
 
 	e.OnDetect = func(slot int) {
+		// The hang-up word means nothing but that, whatever else is going on (hangup.go).
+		if slot == HangupSlot {
+			onCall, farEnd := phone.Get().Busy(), phone.Get().FarEndTalking()
+			if !hangupHeard(onCall, talkback.Get().Busy(), farEnd) {
+				slog.Info("hang-up word ignored", "on_call", onCall, "far_end_talking", farEnd)
+				return
+			}
+			slog.Info("hang-up word, hanging up")
+			phone.Get().Hangup()
+			return
+		}
+
 		// A call has the microphones and the speaker. The far end talking through the speaker is not
 		// someone in the room, and a turn would take the call's audio away mid-sentence. A talk through
 		// a camera (feature/talkback) is the same: whoever is at the door is being spoken to.
@@ -187,6 +209,7 @@ func newDetect() *Detect {
 	d.ducker = newDucker()
 	d.ducker.watch(e)
 	d.stop = newStopEntity(d)
+	d.hangup = newHangup(d)
 	d.score = newScoreEntity()
 	d.onHA = newOnHAEntities()
 	e.OnScored = func(slot int, peak, _ float64) {

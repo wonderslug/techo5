@@ -51,7 +51,7 @@ diagnostics can read, and never in an image or a release.
 |---|---|
 | **Place a call** | `esphome.<device>_phone_call` with `number`: a phone number (`15551234567`) or another account's extension. Spaces, dashes and a leading `+` are dropped. |
 | **Answer** | The action button on a Dot, a tap on a Show or Spot, the **Answer call** button in Home Assistant, or `esphome.<device>_phone_answer`. |
-| **Decline or hang up** | The same button again, a sideways swipe on the Spot, **Decline** / **Hang up** on the Show, the **Hang up** button, or `esphome.<device>_phone_hangup`. |
+| **Decline or hang up** | The same button again, a sideways swipe on the Spot, **Decline** / **Hang up** on the Show, the **Hang up** button, `esphome.<device>_phone_hangup`, or the hang-up word (below). |
 | **Say something into a call** | `assist_satellite.announce` on the same device while a call is up: the message plays in the room and goes into the call. |
 
 ### Contacts on a screen
@@ -71,6 +71,22 @@ on the device.
 While a call rings or is up, the wake word is ignored (the far end talking through the speaker is not
 someone in the room), and music and other sounds pause for it. A ringing call lights the Show's and
 the Spot's screen and pulses the Dot's ring green.
+
+### A hang-up word
+
+Say "hang up" during a call and the device hangs it up: one that is up, one ringing here (declined),
+or one being placed. It is heard on the device, so it works with Home Assistant down. The word comes
+with the device and is on unless **Hang-up word** (the device's microphone settings in Home Assistant)
+is set to **None**. The same list has every wake word the device has, so another can stand in for it,
+including one of your own added the way a wake word of your own is (setup.md).
+
+- It is listened for only while a call rings or is up; the rest of the time it is not loaded at all.
+- It is not acted on while the other party is talking, or for a moment after: their voice comes out
+  of the speaker. Wait for a gap.
+- A talk through a camera is not ended this way, and an alarm or timer ringing is left to the stop
+  word.
+- **Hang-up word threshold** is the score it has to reach, a wake word's 0.85 until set. Higher hears
+  it less often, by mistake or not.
 
 ## Events
 

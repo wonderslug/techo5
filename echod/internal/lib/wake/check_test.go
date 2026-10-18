@@ -11,15 +11,19 @@ import (
 	"github.com/HuskerMinion/techo5/echod/internal/lib/tflite"
 )
 
-// stopPath is the stop word's model, the one microWakeWord model the repository carries.
-var stopPath = filepath.Join("..", "..", "feature", "detect", "assets", "stop.tflite")
+// stopPath is the stop word's model, and hangupPath the hang-up word's: the microWakeWord models the
+// repository carries.
+var (
+	stopPath   = filepath.Join("..", "..", "feature", "detect", "assets", "stop.tflite")
+	hangupPath = filepath.Join("..", "..", "feature", "detect", "assets", "hang_up.tflite")
+)
 
 // Every microWakeWord model the device carries passes the check every model is now held to before the
-// engine loads it: the stop word in the repository always, and the image's wake words when
+// engine loads it: the stop and hang-up words in the repository always, and the image's wake words when
 // TECHO5_MODELS names a directory of them (tools/fetch-inputs.py puts them in inputs/models). The
 // openWakeWord ones among those only have to parse.
 func TestBundledModelsPassTheModelCheck(t *testing.T) {
-	paths := []string{stopPath}
+	paths := []string{stopPath, hangupPath}
 	if dir := os.Getenv("TECHO5_MODELS"); dir != "" {
 		found, err := filepath.Glob(filepath.Join(dir, "*.tflite"))
 		if err != nil || len(found) == 0 {
