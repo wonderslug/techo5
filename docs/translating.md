@@ -16,6 +16,7 @@ can be complete and still never have been looked at on a real screen.
 | English | 667 | source | | |
 | Dutch (nl) | 104 | 15% | christianschmidt (#365) | Not yet |
 | French (fr) | 667 | 100% | royto (#346) | Not yet |
+| Galician (gl) | 667 | 100% | Xocko12 (#368) | Echo Show 5 2nd gen, v1.6.17 |
 | German (de) | 667 | 100% | christianschmidt (#322) | Echo Show 5 1st gen, v1.6.12 (#322) |
 | Italian (it) | 667 | 100% | angelor87 (#310, #353) | Echo Show 5 1st gen (#353) |
 | Japanese (ja) | 667 | 100% | lem0njuice0 (#270) | Echo Show 5 2nd gen (#270) |
