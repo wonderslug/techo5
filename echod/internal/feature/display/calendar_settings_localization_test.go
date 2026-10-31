@@ -38,6 +38,7 @@ func TestDisplayCalendarSettingsUseJapanesePresentationOnly(t *testing.T) {
 		"countdowns":         {"開始までの時間", "今日の予定に「あと25分」などを表示"},
 		"week_view":          {"週表示", "7日分の予定を時刻に沿って表示"},
 		"week_starts_monday": {"週の始まりを月曜日に", "日曜日ではなく月曜日から"},
+		"chip_size":          {"カレンダーのラベル", "月表示の上に並ぶカレンダー名"},
 		"next_up":            {"時計に次の予定", "時計の下部に今日の次の予定を表示"},
 		"weather":            {"カレンダーの天気", "各日の天気予報を表示"},
 	}
@@ -77,6 +78,7 @@ func TestDisplayCalendarSettingsUseJapanesePresentationOnly(t *testing.T) {
 		}{
 			{"cal_opens_on", []string{"Month", "Week", "Day", "Coming up"}, []string{"月表示", "週表示", "日表示", "今後の予定"}},
 			{"cal_month_details", []string{"Full", "Simple"}, []string{"詳細", "簡易"}},
+			{"cal_chip_size", []string{"Normal", "Small"}, []string{"標準", "小"}},
 		} {
 			p, ok := pickerFor(tc.id, sheetView{})
 			want := tc.raw

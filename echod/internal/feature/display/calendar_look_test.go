@@ -142,6 +142,7 @@ func TestCalendarLookPreviews(t *testing.T) {
 			_ = config.Set().Calendar().Week(true)
 			_ = config.Set().Calendar().MondayFirst(true)
 		}},
+		{"-small-chips", func() { _ = config.Set().Calendar().SmallChips(true) }},
 		{"-plain", func() {
 			_ = config.Set().Calendar().DayList(true)
 			_ = config.Set().Calendar().AgendaPlain(true)
@@ -157,6 +158,9 @@ func TestCalendarLookPreviews(t *testing.T) {
 				scenes := calendarScenes()
 				if vr.name == "-week-on" {
 					scenes["calendar-week-edges"] = reviewScenes()["calendar-week-edges"]
+				}
+				if vr.name == "-small-chips" {
+					scenes["calendar-month-many"] = reviewScenes()["calendar-month-many"]
 				}
 				if vr.name == "" {
 					for name, s := range reviewScenes() {
