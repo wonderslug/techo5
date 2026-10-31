@@ -79,6 +79,11 @@ How it compares with EchoLocal, EchoMuse, echo-dot-assist, Kiosk Satellite and V
 
 The bigger changes of September and October 2026. Every release lists the rest.
 
+- 🌍 **Galician, and a Monday week** (v1.6.18). **Screen language** gains Galician, with its own voice
+  words and dates ([#368](https://github.com/HuskerMinion/techo5/pull/368)), and Dutch for the labels
+  and buttons ([#365](https://github.com/HuskerMinion/techo5/pull/365)). A **Week starts Monday** calendar
+  switch, off by default ([#369](https://github.com/HuskerMinion/techo5/issues/369)), and a wake word
+  threshold of its own for while the speaker plays ([#367](https://github.com/HuskerMinion/techo5/pull/367)).
 - 🔠 **Text size and a dashboard layout** (v1.6.17). A **Text size** setting draws every word on the
   screen from 70% to 125% ([#363](https://github.com/HuskerMinion/techo5/pull/363)), and **Brightness**
   steps down to 5% for a dark room ([#362](https://github.com/HuskerMinion/techo5/pull/362)). Drawn

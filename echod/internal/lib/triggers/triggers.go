@@ -82,7 +82,7 @@ var Languages = map[string]Set{
 	},
 	"gl": {
 		// Not "neve" alone: it is inside the English "never", which Match all would take as the weather.
-		Weather: []string{"o tempo", "que tempo", "previsión", "temperatura", "choiva", "chove", "choverá", "de neve",
+		Weather: []string{"o tempo", "que tempo", "previsión", "temperatura", "choiva", "chove", "choverá",
 			"neve hoxe", "neve mañá", "nevará", "nevando",
 			"treboada", "tormenta", "soleado", "anubrado", "radar"},
 		Radar:  []string{"radar", "mapa da choiva", "mapa do tempo"},

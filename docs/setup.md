@@ -705,7 +705,8 @@ like "kitchen screen" under its **Voice assistants** settings in Home Assistant.
 - **Now playing** (the full page, or a strip over the clock). Once the music is
   paused or stopped for 30 seconds, the full page goes by itself: to the strip when the setting uses
   one, otherwise back to the clock, or to the dashboard when **Dashboard when idle** is on (the Spot
-  has no strip, so its clock face). The track is still held
+  has no strip, so its clock face). A strip left by the page going by itself goes too once the music
+  has been paused for 10 minutes. The track is still held
   for half an hour, so play picks it up again and the page comes back. A page you bring back while it
   is paused, with the clock's word for the music or a tap on the strip's song, stays another 30 seconds.
 - **Theme** (Show): a preset, or **Custom colors** of your own. On the screen, tap a color for each part.
@@ -730,9 +731,9 @@ like "kitchen screen" under its **Voice assistants** settings in Home Assistant.
 - **Video** (Show and Spot): videos full screen from Home Assistant's `play_video` action and, with **DLNA
   video** on, from DLNA apps. Off on a new device. On the setup page's Screen & Photos tab. See
   [Video](video.md).
-- **Screen language** (Settings → General): the language of the screen. German, French, Italian,
-  Japanese and Turkish translate the whole screen, settings included; Spanish translates part of it.
-  Dutch, Portuguese and Russian write the clock's day and date, the forecast's days, the weather's
+- **Screen language** (Settings → General): the language of the screen. German, French, Galician,
+  Italian, Japanese and Turkish translate the whole screen, settings included; Spanish translates part
+  of it, and Dutch its labels and buttons. Dutch, Portuguese and Russian write the clock's day and date, the forecast's days, the weather's
   words and the alarm after the date; the rest stays in English, as with *Match all* or *English*.
   Untranslated messages fall back to English ([how far each language is](translating.md)). It also
   picks which words the screen listens for. It
