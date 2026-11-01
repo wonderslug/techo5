@@ -189,11 +189,25 @@ func (v *Voice) ShowEffect(name string) error {
 //
 // The connection a subscription arrives on is kept: a run at the wake word stage is a request the
 // satellite has no call for, and goes out on it directly (hawake.go).
+//
+// A subscription on a new connection takes over from the one held. The satellite turns it away while
+// another connection holds it, and Home Assistant subscribes once per connection: an old connection
+// not yet seen to close (the device's Wi-Fi dropped under it) would hold voice with nothing to take it
+// back when it finally goes.
 func (v *Voice) Handle(ctx context.Context, c *esphome.Conn, msg proto.Message) error {
 	if m, ok := msg.(*api.SubscribeVoiceAssistantRequest); ok && m.GetSubscribe() {
-		v.turn.conn.Store(c)
+		if old := v.turn.conn.Swap(c); old != nil && old != c {
+			v.vs.ConnClosed(old)
+		}
 	}
 	return v.vs.Handle(ctx, c, msg)
+}
+
+// ConnClosed lets go of a closed connection's subscription, so Home Assistant's next one, on its new
+// connection, takes it. The server tells the handlers of each connection that closes.
+func (v *Voice) ConnClosed(c *esphome.Conn) {
+	v.turn.conn.CompareAndSwap(c, nil)
+	v.vs.ConnClosed(c)
 }
 
 // Run owns the conversation until ctx is canceled. Nothing happens on a wake word until it is
