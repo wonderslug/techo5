@@ -393,6 +393,15 @@ captured login to the same page for a few minutes, and could see the pictures an
   same network can play to the device while one is on, as with any AirPlay or Spotify speaker, and
   Spotify Connect keeps the login a phone hands it until it is turned off.
 
+  If Spotify Connect shows up in the Spotify app and connects but skips every track, and the log has
+  `error audio key 0 1`, Spotify is refusing librespot (the open-source player behind it) the key to
+  play the track. It happens on some Premium accounts with librespot anywhere, not only on TECHO5, and
+  there is no fix on the device side yet ([#366](https://github.com/HuskerMinion/techo5/issues/366)).
+  A way around it: Music Assistant's Spotify Connect plugin with Spotify's own Soloist engine, playing
+  to the device as a Sendspin player. Choose the Music Assistant device in the Spotify app, and set the
+  plugin's **Spotify App volume behavior** to **Synchronize Spotify App volume** for the phone's volume
+  slider to work.
+
   Every image from v1.6.8 and dot-v1.0.35 carries the AirPlay 2 receiver, so an iPhone can group the
   device with other AirPlay 2 speakers (a HomePod, a Sonos) and play to all of them at once. Where it
   can't run (it won't start, or the kernel can't take the firewall's AirPlay 2 rules, which the
