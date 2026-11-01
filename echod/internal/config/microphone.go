@@ -44,6 +44,10 @@ type Microphone struct {
 	// Claps listens for a double clap and tells Home Assistant (feature/clap). Off unless somebody turns
 	// it on: it is a new use of the microphones, even if only an event leaves them.
 	Claps bool `json:"claps,omitempty"`
+
+	// ClapSense is how much it takes to be a double clap: Normal, or Strict for a room where a phone set
+	// down or a knock on a hard desk passes for one (#373).
+	ClapSense ClapSense `json:"clap_sense,omitempty"`
 }
 
 const (
@@ -186,6 +190,29 @@ func (w MicrophoneWriter) Noise(v bool) error {
 // Claps is whether a double clap is listened for.
 func (w MicrophoneWriter) Claps(v bool) error {
 	return w.st.Update(func(c *Config) { c.Microphone.Claps = v })
+}
+
+// ClapSense is how much it takes to be a double clap.
+func (w MicrophoneWriter) ClapSense(v ClapSense) error {
+	return w.st.Update(func(c *Config) { c.Microphone.ClapSense = v })
+}
+
+// ClapSense is how much it takes to be a double clap.
+type ClapSense string
+
+const (
+	ClapNormal ClapSense = ""
+	ClapStrict ClapSense = "strict"
+)
+
+// ClapSenses is the choice, for a select.
+func ClapSenses() []ClapSense { return []ClapSense{ClapNormal, ClapStrict} }
+
+func (v ClapSense) Label() string {
+	if v == ClapStrict {
+		return "Strict"
+	}
+	return "Normal"
 }
 
 // Mixing is how a microphone array is reduced to the single channel recognition reads.

@@ -412,6 +412,7 @@ func KeepOwn(c *Config, from Config) {
 	// a secret, kept by KeepSecrets). The remote API's switch too: a restore never opens a door.
 	c.Microphone.Noise = from.Microphone.Noise
 	c.Microphone.Claps = from.Microphone.Claps
+	c.Microphone.ClapSense = from.Microphone.ClapSense
 	c.CamStream = from.CamStream
 	c.Remote.On = from.Remote.On
 	// Being on a tailnet is this device's: a restore never turns Tailscale or NetBird on or off.

@@ -60,6 +60,7 @@ var registered = []string{
 	"cancel_request",
 	"check_for_updates",
 	"clap_gesture",
+	"clap_sensitivity",
 	"confirm_threshold",
 	"confirm_wake_with_home_assistant",
 	"cpu_cores",

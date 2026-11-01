@@ -892,6 +892,15 @@ device's fonts folder over SSH ([Set the SSH authorized keys](actions.md#set-the
   claps. It does not listen while the device plays music or a sound of its own, rings, or is in a
   request or a call. Only the event leaves the device: one microphone is read on it, as the wake
   word already reads them.
+  - **Clap sensitivity** (Home Assistant, Normal by default): **Strict** for a room where a phone
+    set down or two knocks on a hard desk pass for a double clap. It wants louder claps, brighter
+    ones and two that match more closely, so clap a little harder.
+  - The event also carries what the two claps measured, for an automation to leave out what isn't
+    a clap in your room: `first_db` and `second_db` (how far each rose over the room, in dB),
+    `first_brightness` and `second_brightness` (Normal wants 0.5 or more, Strict 0.8) and
+    `apart_ms`. Watch a few real claps and a few false ones in Developer tools, Events, listening
+    to `esphome.techo5_gesture`, then add a condition with a number between the two, such as
+    `{{ trigger.event.data.first_brightness | float(0) >= 0.9 }}`.
 - **Hold on the clock** (Show, off by default; the **Hold on the clock** switch in Home Assistant):
   a finger held on the clock for half a second sends the same event with `gesture: hold`. Only on
   the clock itself, with nothing else on the screen (not over the screensaver, a card or the night

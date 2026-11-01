@@ -54,6 +54,7 @@ var keptByRestore = map[string]keptSetting{
 	"confirm_wake_with_home_assistant": {func(c *config.Config) { c.Wake.OnHA.Confirm = true }, func(c config.Config) bool { return c.Wake.OnHA.Confirm }},
 	"ambient_noise_sensor":             {func(c *config.Config) { c.Microphone.Noise = true }, func(c config.Config) bool { return c.Microphone.Noise }},
 	"clap_gesture":                     {func(c *config.Config) { c.Microphone.Claps = true }, func(c config.Config) bool { return c.Microphone.Claps }},
+	"clap_sensitivity":                 {func(c *config.Config) { c.Microphone.ClapSense = config.ClapStrict }, func(c config.Config) bool { return c.Microphone.ClapSense == config.ClapStrict }},
 	"clock_hold_gesture":               {func(c *config.Config) { c.Screen.ClockHold = true }, func(c config.Config) bool { return c.Screen.ClockHold }},
 	"camera_streaming":                 {func(c *config.Config) { c.CamStream.On = true }, func(c config.Config) bool { return c.CamStream.On }},
 	"camera_login_from_ha":             {func(c *config.Config) { c.CamStream.LoginFromHA = true }, func(c config.Config) bool { return c.CamStream.LoginFromHA }},
