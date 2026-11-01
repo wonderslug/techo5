@@ -938,7 +938,7 @@ Under Settings → **Sound**, or on the device's Assist satellite in Home Assist
   ([Watching the wake word scores](#watching-the-wake-word-scores)). Called Wake word sensitivity
   before v1.2.8.
 - **Wake word threshold (playing)** (0.5 to 0.99): the wake word's separate cutoff while the speaker
-  plays and echo cancellation is active. Until you change it, the device keeps the old behavior:
+  plays and echo cancellation is active, a ringing timer or alarm included. Until you change it, the device keeps the old behavior:
   0.10 below the normal threshold, but no lower than 0.50. Once set, it is independent of the
   normal threshold. The screen sets the first wake word; Home Assistant has one for each assistant.
 - **Wake word on Home Assistant** and **Confirm wake with Home Assistant** (both off by default):
