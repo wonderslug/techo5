@@ -77,8 +77,13 @@ How it compares with EchoLocal, EchoMuse, echo-dot-assist, Kiosk Satellite and V
 
 ## What's new
 
-The bigger changes of September and October 2026. Every release lists the rest.
+The bigger changes of September to November 2026. Every release lists the rest.
 
+- 👏 **A stricter clap, and "Alexa, stop" over a ring** (v1.6.19). **Clap sensitivity** adds a Strict
+  choice for a room where a desk passes for a double clap, and the clap event carries what it measured
+  ([#373](https://github.com/HuskerMinion/techo5/issues/373)). A wake word nearly heard over a ringing
+  timer pauses the ring for the second try ([#372](https://github.com/HuskerMinion/techo5/issues/372)),
+  and smaller **Calendar chips** fit a long list of calendars ([#371](https://github.com/HuskerMinion/techo5/pull/371)).
 - 🌍 **Galician, and a Monday week** (v1.6.18). **Screen language** gains Galician, with its own voice
   words and dates ([#368](https://github.com/HuskerMinion/techo5/pull/368)), and Dutch for the labels
   and buttons ([#365](https://github.com/HuskerMinion/techo5/pull/365)). A **Week starts Monday** calendar
