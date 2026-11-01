@@ -19,7 +19,7 @@ sudo apt install git python3 qemu-user-static binfmt-support uidmap \
     build-essential bc bison flex libssl-dev curl xz-utils bzip2
 ```
 
-and Go 1.26 or later from [go.dev/dl](https://go.dev/dl/) (distribution packages are often older).
+and Go 1.27 or later from [go.dev/dl](https://go.dev/dl/) (distribution packages are often older).
 
 **Windows:** install [Git for Windows](https://git-scm.com/download/win) (its Git Bash runs the
 `.sh` scripts), [Go](https://go.dev/dl/) and [Python 3](https://www.python.org/downloads/). Then
